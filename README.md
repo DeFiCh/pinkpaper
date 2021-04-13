@@ -1,4 +1,4 @@
 # pinkpaper
 Pink Paper for DeFiChain
 
-_Coming soon_
+_To be updated soon_
