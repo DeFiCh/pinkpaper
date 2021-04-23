@@ -2,7 +2,7 @@
 
 This is a working version of the Pink Paper for [DeFiChain](https://defichain.com).
 
-Comments and pull requests are welcomed and encouraged.
+Comments and pull requests are welcomed.
 
 ## Goals
 
@@ -28,7 +28,7 @@ Comments and pull requests are welcomed and encouraged.
 
 ## Disclaimers
 
-- Content may be updated without notice.
-- Content does not guarantee implementation and does not imply implementation order.
-- Actual implementation may differ from the paper.
-- This my no means signify acceptance by the DeFiChain users and masternode owners.
+1. Content may be updated without notice.
+1. Content does not guarantee implementation and does not imply implementation order.
+1. Actual implementation may differ from the paper.
+1. This my no means signify acceptance by the DeFiChain users and masternode owners.
