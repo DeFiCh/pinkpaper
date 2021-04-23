@@ -1,4 +1,4 @@
-# Pink Paper for DeFiChain
+![DeFiChain Pink Paper](files/pinkpaper-banner.svg)
 
 This is a working version of the Pink Paper for [DeFiChain](https://defichain.com).
 
