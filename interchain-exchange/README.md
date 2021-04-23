@@ -32,7 +32,6 @@ Key areas of focus, in decreasing order of importance:
 1. Buyer vs Seller
 1. Maker vs Taker
 
-
 ## Scenarios
 
 2 scenarios:
@@ -155,3 +154,10 @@ Dave
 2. N/A
 3. If Charlie does not accept, Bob's offer expires after 10 blocks and takes back `optionFee`.
 4. If Bob does not honor the BTC side, Alice receives back her 2.5 TSLA after 1 hour + `optionFee`.
+
+
+# Override Notice: Fees and Incentives
+
+_TODO: Cleanup this document to be coherent_
+
+The above document has parts overriden by the [fees document](fees.md).
