@@ -26,9 +26,9 @@ Comments and pull requests are welcomed.
 | 10 | Automated options  | Early draft. |
 | 11 | Non-Fungible Token (NFT)  | Early draft. |
 
-### See al
+#### See also
 
-- [Presentation deck on 2021-03-30](/files/2021-03-30 DeFiChain PinkPaper Overview.pdf)
+- [Presentation deck on 2021-03-30](</files/2021-03-30 DeFiChain PinkPaper Overview.pdf>)
 
 ## Disclaimers
 
