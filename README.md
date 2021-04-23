@@ -12,19 +12,23 @@ Comments and pull requests are welcomed.
 
 ## Sections
 
-| Topic    | Remarks |
-| ------------- | ------------- |
-| [Introduction](README.md) | This document.  |
-| [Emission rate](/emission) | Under implementation. Targeting May 2021 upgrade. |
-| [Governance](/governance) | Also community development fund management. <br> Under implementation. Targeting May 2021 upgrade. |
-| [Price oracle](/price-oracle) | Under implementation. Targeting May 2021 upgrade. |
-| [Interchain exchange (ICX)](/interchain-exchange) |  Also Bitcoin atomic swap. Under implementation. Targeting May 2021 upgrade. |
-| [Fees](/fees) | Draft. Partial implementation. |
-| Futures | Early draft. |
-| [Operator](/operator) | Early draft. |
-| Loan & decentralized tokenization | Early draft. |
-| Automated options  | Early draft. |
-| Non-Fungible Token (NFT)  | Early draft. |
+| #    | Topic    | Remarks |
+| ------------- | ------------- | ------------- |
+| 1 | [Introduction](README.md) | This document.  |
+| 2 | [Emission rate](/emission) | Under implementation. Targeting May 2021 upgrade. |
+| 3 | [Governance](/governance) | Also community development fund management. <br> Under implementation. Targeting May 2021 upgrade. |
+| 4 | [Price oracle](/price-oracle) | Under implementation. Targeting May 2021 upgrade. |
+| 5 | [Interchain exchange (ICX)](/interchain-exchange) |  Also Bitcoin atomic swap. Under implementation. Targeting May 2021 upgrade. |
+| 6 | [Fees](/fees) | Draft. Partial implementation. |
+| 7 | Futures | Early draft. |
+| 8 | [Operator](/operator) | Early draft. |
+| 9 | Loan & decentralized tokenization | Early draft. |
+| 10 | Automated options  | Early draft. |
+| 11 | Non-Fungible Token (NFT)  | Early draft. |
+
+### See al
+
+- [Presentation deck on 2021-03-30](/files/2021-03-30 DeFiChain PinkPaper Overview.pdf)
 
 ## Disclaimers
 
