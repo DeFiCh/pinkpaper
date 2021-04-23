@@ -19,7 +19,7 @@ Comments and pull requests are welcomed and encouraged.
 | [Governance](/governance) | Also community development fund management. <br> Under implementation. Targeting May 2021 upgrade. |
 | [Price oracle](/price-oracle) | Under implementation. Targeting May 2021 upgrade. |
 | [Interchain exchange (ICX)](/interchain-exchange) |  Also Bitcoin atomic swap. Under implementation. Targeting May 2021 upgrade. |
-| DeFi Fees | Draft. Partial implementation. |
+| [Fees](/fees) | Draft. Partial implementation. |
 | Futures | Early draft. |
 | [Operator](/operator) | Early draft. |
 | Loan & decentralized tokenization | Early draft. |
