@@ -24,7 +24,7 @@ Comments and pull requests are welcomed and encouraged.
 | ------------- | ------------- |
 | [Introduction](README.md) |  |
 | [Emission rate](/emission) | Under implementation. Targeting May 2021 upgrade. |
-| Governance | Under implementation. Targeting May 2021 upgrade. |
+| [Governance](/governance) | Also covers community development fund management. <br> Under implementation. Targeting May 2021 upgrade. |
 | Price oracle | Under implementation. Targeting May 2021 upgrade. |
 | Interchain exchange (ICX) & Atomic swap | Under implementation. Targeting May 2021 upgrade. |
 | DeFi Fees | Draft. Partial implementation. |
