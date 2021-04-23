@@ -14,15 +14,15 @@ Comments and pull requests are welcomed and encouraged.
 
 | Topic    | Remarks |
 | ------------- | ------------- |
-| [Introduction](README.md) |  |
+| [Introduction](README.md) | This document.  |
 | [Emission rate](/emission) | Under implementation. Targeting May 2021 upgrade. |
 | [Governance](/governance) | Also covers community development fund management. <br> Under implementation. Targeting May 2021 upgrade. |
 | [Price oracle](/price-oracle) | Under implementation. Targeting May 2021 upgrade. |
 | Interchain exchange (ICX) & Atomic swap | Under implementation. Targeting May 2021 upgrade. |
 | DeFi Fees | Draft. Partial implementation. |
-| Operator | Draft. |
-| Loan & decentralized tokenization | Draft. |
 | Futures | Early draft. |
+| [Operator](/operator) | Early draft. |
+| Loan & decentralized tokenization | Early draft. |
 | Automated options  | Early draft. |
 | Non-Fungible Token (NFT)  | Early draft. |
 
