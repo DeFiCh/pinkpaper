@@ -35,6 +35,22 @@ For example if `DOGE` is accepted at 70% collateralization factor, $100 of `DOGE
 
 This is not to be confused with _collateralization ratio_.
 
+### Operator
+
+Operator plays to role to decide on the following:
+
+1. Collateral tokens and their respective collateralization values.
+    - For instance, an Operator can decide to allow users to start a Vault in their opspace with the following collateralization factors:
+        - `DFI` at 100% collateralization factor
+        - `BTC` at 100% collateralization factor
+        - `DOGE` at 70% collateralization factor
+
+Operator, also via opspace's governance values, can decide the following:
+
+- `LOAN_MIN_COLLATERIZATION_RATIO`: 1.5 (default), for 150% collateralization ratio. _Deprecated for loan scheme attribute_
+- `LOAN_LIQUIDATION_PENALTY`: 0.15 (default), for 15% liquidation penalty.
+
+
 ### Loan scheme
 
 Loan scheme allows an operator to set up different loan schemes under the same Operator. Loan schemes allows an operator to define the following:
@@ -53,25 +69,29 @@ For example, a series of loan schemes could be made available:
 
 Vault owner can define which loan scheme to subscribe to during initial vault creation and can move it freely after that. Take caution though that if you move to a scheme with lower collateralization ratio, liquidation might be triggered.
 
-### Operator
+### Interest rate
 
-Operator plays to role to decide on the following:
+Interest rate for loan is chargeable in two forms:
 
-1. Collateral tokens and their respective collateralization values.
-    - For instance, an Operator can decide to allow users to start a Vault in their opspace with the following collateralization factors:
-        - `DFI` at 100% collateralization factor
-        - `BTC` at 100% collateralization factor
-        - `DOGE` at 70% collateralization factor
+- DeFi fee, which is required and it must be in DFI
+- Operator fee, which can be in the form of any tokens
 
-Operator, also via opspace's governance values, can decide the following:
+During the initial introduction, Operator fee will not be supported yet, until Operator is in place.
 
-- `LOAN_MIN_COLLATERIZATION_RATIO`: 1.5 (default), for 150% collateralization ratio. _Deprecated for loan scheme attribute_
-- `LOAN_LIQUIDATION_PENALTY`: 0.15 (default), for 15% liquidation penalty.
+[DeFi fees](../fees) are burned. Fees are typically collected in the form of the loan token repayment, and automatically swapped on DEX for DFI to be burned.
+
+For example, if a loan of 100 TSLA is taken out and repaid back exactly 6 months later with the APR of 2%, the user will have to repay 101 TSLA during redemption to regain full access of collateral in the vault.
+
+100 TSLA will be burned as part of the repayment process. 1 TSLA that forms the interest payment will be swapped on DEX for DFI. The resulting DFI will burned. All of these occur atomically as part of DeFiChain consensus.
 
 
 ### Vault
 
 User is able to freely open a vault and deposit tokens to a vault. Vault is transferable to other owners, including being controlled by multisig address.
+
+## Liquidation
+
+Liquidation ...
 
 ## RPC
 
