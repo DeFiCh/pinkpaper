@@ -4,7 +4,7 @@ Loan is be offered by [operator](../operator) to allow decentralized price-track
 
 Before Operator model is ready, it uses only 1 default [opspace](../operator) and requires foundation authorization, that acts on behalf of community.
 
-Possibility of tokens being offered decentrally can be of many types, including but not limited to:
+Possibility of tokens being offered in a decentralized manner can be of many types, including but not limited to:
 
 1. Cryptocurrency such as `BTC`, `ETH`, `LTC`, etc.
 1. Stablecoin such as `USD`, `EUR` tokens, etc.
@@ -13,9 +13,45 @@ Possibility of tokens being offered decentrally can be of many types, including 
 
 ## Concepts
 
-## Collateralization
+### Collateralization ratio
 
-Loan on DeFiChain operates on over-collateralization mechanism. User first has to open a vault.
+Loan on DeFiChain operates on over-collateralization mechanism. User first has to open a vault to mint tokens.
+
+Collateralization is calculated for each vaults, using the following formula:
+
+```
+Collateralization ratio = Total effective value of collateral / (Total value of tokens minted + Total interest)
+```
+
+For example, if a vault holds $200 worth of collateral asset, with $130 minted tokens and $10 of total interest accrued, the collateralization ratio is 200 / (90 + 10) = 2.
+
+This is not to be confused with _collateralization factor_.
+
+### Collateralization factor
+
+Assets that are accepted for collateralization could be accepted at different collateralization factor, from 0% to 100%. When an asset collateralization factor is 100%, the entirety of the asset's value contributes to the collateralization value of the vault, however, if an asset collateralization factor is say 50%, then only half of its value contributes to the total vault's collateral.
+
+For example if `DOGE` is accepted at 70% collateralization factor, $100 of `DOGE` would contribute to $70 of collateral value in a vault.
+
+This is not to be confused with _collateralization ratio_.
+
+### Loan scheme
+
+Loan scheme allows an operator to set up different loan schemes under the same Operator. Loan schemes allows an operator to define the following:
+
+- Collateral token and different collateralization factor
+- Loan interest rates
+
+For example, a series of loan schemes could be made available:
+
+1. Min collateralization ratio: 150%. Interest rate: 5% APR.
+1. Min collateralization ratio: 175%. Interest rate: 3% APR.
+1. Min collateralization ratio: 200%. Interest rate: 2% APR.
+1. Min collateralization ratio: 350%. Interest rate: 1.5% APR.
+1. Min collateralization ratio: 500%. Interest rate: 1% APR.
+1. Min collateralization ratio: 1000%. Interest rate: 0.5% APR.
+
+Vault owner can define which loan scheme to subscribe to during initial vault creation and can move it freely after that. Take caution though that if you move to a scheme with lower collateralization ratio, liquidation might be triggered.
 
 ### Operator
 
@@ -25,26 +61,17 @@ Operator plays to role to decide on the following:
     - For instance, an Operator can decide to allow users to start a Vault in their opspace with the following collateralization factors:
         - `DFI` at 100% collateralization factor
         - `BTC` at 100% collateralization factor
-        - `DOGE` at 50% collateralization factor
+        - `DOGE` at 70% collateralization factor
 
 Operator, also via opspace's governance values, can decide the following:
 
 - `LOAN_MIN_COLLATERIZATION_RATIO`: 1.5 (default), for 150% collateralization ratio. _Deprecated for loan scheme attribute_
 - `LOAN_LIQUIDATION_PENALTY`: 0.15 (default), for 15% liquidation penalty.
 
-### Scheme
-
-Loan scheme allows an opreator to set up different loan schemes under the same Operator. Loan schemes allows an operator to define the following:
-
-    - Collateral token and different collateralization factor
-    - Loan interest rates
-
-This will be introduced alongside Operator.
 
 ### Vault
 
 User is able to freely open a vault and deposit tokens to a vault. Vault is transferable to other owners, including being controlled by multisig address.
-
 
 ## RPC
 
@@ -76,9 +103,9 @@ Requires Operator authorization. Before Operator model is ready, it uses only 1 
 
 1. `setcollateraltoken TOKEN FACTOR PRICE_FEED_ID [ACTIVATE_AFTER_BLOCK]`
     - `TOKEN`: Token must not be the same decentralized token is issued by the same operator's loan program.
-    - `FACTOR`: A number between `0` to `1`, inclusive. `1` being 100% collaterization factor.
+    - `FACTOR`: A number between `0` to `1`, inclusive. `1` being 100% collateralization factor.
     - `PRICE_FEED_ID`: Price feed from [oracle](../oracle) that is being used to price the token.
-    - `ACTIVATE_AFTER_BLOCK` _(optional)_: If set, this will only be activated after the set block. The purpose is to allow good operators to provide sufficient warning to their users should certain collaterization factors need to be updated.
+    - `ACTIVATE_AFTER_BLOCK` _(optional)_: If set, this will only be activated after the set block. The purpose is to allow good operators to provide sufficient warning to their users should certain collateralization factors need to be updated.
     - This very same transaction type is also used for updating and removing of collateral token, by setting the factor to `0`.
 
 1. `setgentoken DATA`
@@ -92,7 +119,7 @@ Requires Operator authorization. Before Operator model is ready, it uses only 1 
 
 ### Public
 
-Requires no autohrizations.
+Requires no authorizations.
 
 1. `getloan [OPERATOR_ID]`
     - Returns the attributes of loan offered by Operator.
@@ -107,7 +134,7 @@ Vault-related, but does not require owner's authentication.
 
 1. `createvault ownerAddress [SCHEME_ID]`
     - Create a vault for ownerAddress.
-    - No ownerAddress authrotization required so that it can be used for yet-to-be-revealed script hash address.
+    - No ownerAddress authorization required so that it can be used for yet-to-be-revealed script hash address.
 
 1. `depositToVault`
     - Deposit accepted collateral tokens to vault.
@@ -125,5 +152,3 @@ Requires ownerAddress authentication.
 1. `withdrawFromVault VAULT_ID`
     - Withdraw collateral tokens from vault.
     - Vault must not by less than `mincolratio` of vault's scheme.
-
-1.
