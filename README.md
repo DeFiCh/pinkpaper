@@ -20,7 +20,7 @@ Comments and pull requests are welcomed.
 | 4 | [Price oracle](/price-oracle) | Under implementation. Targeting May 2021 upgrade. |
 | 5 | [Interchain exchange (ICX)](/interchain-exchange) |  Also Bitcoin atomic swap. Under implementation. Targeting May 2021 upgrade. |
 | 6 | [Fees](/fees) | Draft. Partial implementation. |
-| 7 | Futures | Early draft. |
+| 7 | [Futures](/futures) | Early draft. |
 | 8 | [Operator](/operator) | Early draft. |
 | 9 | Loan & decentralized tokenization | Early draft. |
 | 10 | Automated options  | Early draft. |
