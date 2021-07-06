@@ -20,7 +20,9 @@ Loan on DeFiChain operates on over-collateralization mechanism. User first has t
 Collateralization is calculated for each vaults, using the following formula:
 
 ```
-Collateralization ratio = Total effective value of collateral / (Total value of tokens minted + Total interest)
+Collateralization ratio =
+    Total effective value of collateral /
+    (Total value of tokens minted + Total interest)
 ```
 
 For example, if a vault holds $200 worth of collateral asset, with $130 minted tokens and $10 of total interest accrued, the collateralization ratio is 200 / (90 + 10) = 2.
@@ -47,9 +49,8 @@ Operator plays to role to decide on the following:
 
 Operator, also via opspace's governance values, can decide the following:
 
-- `LOAN_MIN_COLLATERIZATION_RATIO`: 1.5 (default), for 150% collateralization ratio. _Deprecated for loan scheme attribute_
-- `LOAN_LIQUIDATION_PENALTY`: 0.15 (default), for 15% liquidation penalty.
-
+- `LOAN_LIQUIDATION_MARGIN`: 0.1 (default), for 10% liquidation margin. If set at 10%, during liquidation event, additional 10% are liquidated so there's around 10% margin above minimum collateralization ratio.
+- `LOAN_LIQUIDATION_PENALTY`: 0.1 (default), for 10% liquidation penalty. This is converted into DFI upon liquidation and burned.
 
 ### Loan scheme
 
@@ -91,7 +92,88 @@ User is able to freely open a vault and deposit tokens to a vault. Vault is tran
 
 ## Liquidation
 
-Liquidation ...
+Liquidation occurs when the collateralization ratio of a vault falls below its minimum. Liquidation is required to take place in order to bring up the collateralization ratio of a vault again so the token price remains consistent.
+
+For Turing-complete VM-based blockchain, liquidation requires the assistance of publicly run bots to trigger it, in exchange for some incentives.
+
+There are two problems with that:
+- During major price movements, the network fee, or commonly known as gas price, would sky rocket due to a race by both the vault owners frantically trying to save their vaults from getting liquidated, and by the public liquidators trying to trigger liquidation.
+- If liquidations are not triggered on time, tokens that are generated as a result of loan runs the risk of losing its values. Worse scenario would see it getting into a negative feedback loop situation creating a rapid crash of token values.
+
+DeFiChain, a blockchain that's built for specifically for DeFi, enjoy the benefit of automation and can have liquidation trigger automatically on-chain. This address the above two problems.
+
+### Methodology
+
+On every block, the node would evaluate all vaults and trigger the following automatically for liquidation.
+
+When collateralization ratio of a vault falls below minimum collateralization ratio, liquidation amount will be determined as follows:
+
+```
+Total loan  = (Total value of tokens minted + Total interest)
+
+(Collateral - Base reduction) / (Total loan - Base reduction) =
+    Minimum collateralization ratio.
+
+Base reduction =
+    ((Min. ratio * Total loan) - Total collateral) /
+    (Min. ratio - 1)
+
+Effective liquidation =
+    Base reduction * (1 + LOAN_LIQUIDATION_MARGIN + LOAN_LIQUIDATION_PENALTY)
+```
+
+#### Example
+
+A vault, that requires a minimum of 150% collateralization ratio contains $150 worth of collateral and the total loan, inclusive of interest, is $110 worth.
+
+Collateralization ratio = 150 / 110 = 136.36% less than the required 150%. Liquidation is triggered automatically by consensus.
+
+Base reduction = (1.5 * 110 - 150) / (1.5 - 1)
+    = 15 / 0.5
+    = $30
+
+By simply liquidating base reduction, the total collateralization would be 150%. However, without margin, node will constantly having to liquidate every few blocks; besides, the penalty isn't yet applied.
+
+For illustration, collateralization ratio after base reduction = (150 - 30) / (110 - 30) = 120 / 80 = 1.5
+
+Effective liquidation is actually the following:
+
+- Actual liquidation = base reduction * (1 + `LOAN_LIQUIDATION_MARGIN`) = $30 * 1.1 = $33
+- Liquidation penalty = base reduction * `LOAN_LIQUIDATION_PENALTY` = $30 * 0.1 = $3
+
+A total of $33 + $3 worth of collaterals will be removed from collateral of the vault.
+
+### Collateral removal
+
+The order of collateral selection for removal would be in the following order:
+
+1. Non-DFI collateral with the highest liquidity in the DEX.
+2. DFI collateral.
+
+If a vault has BTC and DFI as collateral, BTC would be used for liquidation first until there are no more BTC, then DFI will be used.
+
+From the above example, say in this case $33 + $3 worth of BTC that will be liquidated. Assuming also that the vault takes out a loan of `TSLA` token and `USD` token, with `TSLA` being the larger position.
+
+They will be immediately trigger the following actions, all on consensus:
+
+1. Liquidation penalty: $3 worth of `BTC` will be swapped on BTC-DFI DEX for DFI and the resulting DFI be trackably burned.
+2. Vault payback: $33 worth of `BTC` will be liquidated and swapped to `TSLA` for payback. As `TSLA` DEX could be in the form of `TSLA-USD`, the DEX path would be:
+    1. `BTC` to `DFI` from `BTC-DFI` DEX.
+    1. `DFI` to `USD` from `USD-DFI` DEX.
+    1. `USD` to `TSLA` from `TSLA-DFI` DEX.
+
+The above swaps are atomically carried out by blockchain consensus. The resulting `TSLA` token is paid back to the vault to reduce the loan position.
+
+### Effect
+
+Liquidation is triggered based on oracle's price and not on DEX prices, to prevent DEX manipulation.
+
+The effect of the automatic liquidation that swaps on DEX assists in tracking of real world asset price to DEX price, especially if token is trading below real world price.
+
+However, if asset is trading on DEX above real world price, especially above `LOAN_LIQUIDATION_MARGIN` more than real world price, there is a risk of automatic liquidation would not yield sufficient asset token to keep the vault afloat, triggering a spiral of liquidation every block that eventually drains the entire collateral.
+
+_TK: Switching to auction model_
+
 
 ## RPC
 
