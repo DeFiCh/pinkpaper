@@ -84,7 +84,6 @@ For example, if a loan of 100 `TSLA` is taken out and repaid back exactly 6 mont
 
 100 `TSLA` will be burned as part of the repayment process. 1 `TSLA` that forms the interest payment will be swapped on DEX for DFI. The resulting DFI will burned. All of these occur atomically as part of DeFiChain consensus.
 
-
 ### Vault
 
 User is able to freely open a vault and deposit tokens to a vault. Vault is transferable to other owners, including being controlled by multisig address.
@@ -155,109 +154,27 @@ $7,800 worth of `TSLA` token will be processed as follow:
     1. `TSLA` to `USD` from `TSLA-USD` DEX.
     1. `USD` to `DFI` from `USD-DFI` DEX.
 
+If auctions yield more `TSLA` than the vault's loan, it will be deposited back to the vault as part of vault's asset, but not collateral. It can be withdrawn from the vault after vault exits liquidation state by vault's owner and carries no interest.
+
+### Multiple loan tokens
+
+If a vault consists of multiple loan tokens, they should be auctioned separately.
+
+For instance, a liquidating vault that consists of the following:
+- Collateral: 1 BTC & 100 DFI
+- Loan: $10k worth of USD * $40k worth TSLA
+
+would be liquidated as follows:
+
+- (0.2 BTC & 20 DFI) for $10k worth of USD
+- (0.8 BTC & 80 DFI) for $40k worth of TSLA
+
+and further split into $10k batches.
+
 
 ### Failed auction
 
 Auction that expires after 720 blocks without bids will be reopened immediately based on the remaining amount of collateral and loan that the vault receives due to conclusion of other auction batches.
-
-
-
-
-<!--
-
-// SWITCHING MODEL
-
-====
-
-Base reduction = (1.5 * 110 - 150) / (1.5 - 1)
-    = 15 / 0.5
-    = $30
-
-By simply liquidating base reduction, the total collateralization would be 150%. However, without margin, node will constantly having to liquidate every few blocks; besides, the penalty isn't yet applied.
-
-For illustration, collateralization ratio after base reduction = (150 - 30) / (110 - 30) = 120 / 80 = 1.5
-
-Effective liquidation is actually the following:
-
-- Actual liquidation = base reduction * (1 + `LOAN_LIQUIDATION_MARGIN`) = $30 * 1.1 = $33
-- Liquidation penalty = base reduction * `LOAN_LIQUIDATION_PENALTY` = $30 * 0.1 = $3
-
-A total of $33 + $3 worth of collaterals will be removed from collateral of the vault.
-
-## Collateral auction
-
-_TK: more info to follow_
-
-
-liquidation amount will be determined as follows:
-
-```
-Total loan  = (Total value of tokens minted + Total interest)
-
-(Collateral - Base reduction) / (Total loan - Base reduction) =
-    Minimum collateralization ratio.
-
-Base reduction =
-    ((Min. ratio * Total loan) - Total collateral) /
-    (Min. ratio - 1)
-
-Effective liquidation =
-    Base reduction * (1 + LOAN_LIQUIDATION_MARGIN + LOAN_LIQUIDATION_PENALTY)
-```
-
-#### Example
-
-A vault, that requires a minimum of 150% collateralization ratio contains $150 worth of collateral and the total loan, inclusive of interest, is $110 worth.
-
-Collateralization ratio = 150 / 110 = 136.36% less than the required 150%. Liquidation is triggered automatically by consensus.
-
-Base reduction = (1.5 * 110 - 150) / (1.5 - 1)
-    = 15 / 0.5
-    = $30
-
-By simply liquidating base reduction, the total collateralization would be 150%. However, without margin, node will constantly having to liquidate every few blocks; besides, the penalty isn't yet applied.
-
-For illustration, collateralization ratio after base reduction = (150 - 30) / (110 - 30) = 120 / 80 = 1.5
-
-Effective liquidation is actually the following:
-
-- Actual liquidation = base reduction * (1 + `LOAN_LIQUIDATION_MARGIN`) = $30 * 1.1 = $33
-- Liquidation penalty = base reduction * `LOAN_LIQUIDATION_PENALTY` = $30 * 0.1 = $3
-
-A total of $33 + $3 worth of collaterals will be removed from collateral of the vault.
-
-### Collateral removal
-
-The order of collateral selection for removal would be in the following order:
-
-1. Non-DFI collateral with the highest liquidity in the DEX.
-2. DFI collateral.
-
-If a vault has BTC and DFI as collateral, BTC would be used for liquidation first until there are no more BTC, then DFI will be used.
-
-From the above example, say in this case $33 + $3 worth of BTC that will be liquidated. Assuming also that the vault takes out a loan of `TSLA` token and `USD` token, with `TSLA` being the larger position.
-
-They will be immediately trigger the following actions, all on consensus:
-
-1. Liquidation penalty: $3 worth of `BTC` will be swapped on BTC-DFI DEX for DFI and the resulting DFI be trackably burned.
-2. Vault payback: $33 worth of `BTC` will be liquidated and swapped to `TSLA` for payback. As `TSLA` DEX could be in the form of `TSLA-USD`, the DEX path would be:
-    1. `BTC` to `DFI` from `BTC-DFI` DEX.
-    1. `DFI` to `USD` from `USD-DFI` DEX.
-    1. `USD` to `TSLA` from `TSLA-DFI` DEX.
-
-The above swaps are atomically carried out by blockchain consensus. The resulting `TSLA` token is paid back to the vault to reduce the loan position.
-
-### Effect
-
-Liquidation is triggered based on oracle's price and not on DEX prices, to prevent DEX manipulation.
-
-The effect of the automatic liquidation that swaps on DEX assists in tracking of real world asset price to DEX price, especially if token is trading below real world price.
-
-However, if asset is trading on DEX above real world price, especially above `LOAN_LIQUIDATION_MARGIN` more than real world price, there is a risk of automatic liquidation would not yield sufficient asset token to keep the vault afloat, triggering a spiral of liquidation every block that eventually drains the entire collateral.
-
-_TK: Switching to auction model_
-
--->
 
 
 ## RPC
@@ -310,10 +227,15 @@ Requires no authorizations.
 
 1. `getloan [OPERATOR_ID]`
     - Returns the attributes of loan offered by Operator.
+    - Includes especially the following:
+        - Collaterals, and collateral value
+        - Loan tokens, and loan value
+        - Collateralization ratio
+        - Loan scheme
+        - `inliquidation` (boolean) whether if a vault is under liquidation
 
 1. `listloanschemes`
     - Returns the list of attributes to all the available loan schemes.
-
 
 #### Vault
 
@@ -323,19 +245,39 @@ Vault-related, but does not require owner's authentication.
     - Create a vault for ownerAddress.
     - No ownerAddress authorization required so that it can be used for yet-to-be-revealed script hash address.
 
-1. `depositToVault`
+1. `deposittovault VAULT_ID`
     - Deposit accepted collateral tokens to vault.
     - Does not require authentication, anyone can top up anyone's vault.
+
+1. `loanpayback VAULT_ID`
+    - Pay back of loan token.
+    - Only works when there are loan in the token.
+    - Refunds additional loan token back to original caller, if 51.1 `TSLA` is owed and user pays 52 `TSLA`, 0.9 `TSLA` is returned as change to transaction originator (not vault owner).
+    - Does not require authentication, anyone can payback anyone's loan.
 
 ### Vault owner
 
 Requires ownerAddress authentication, and vault MUST NOT be in liquidation state.
 
-1. `updateVault VAULT_ID DATA`
+1. `updatevault VAULT_ID DATA`
     - `DATA` (JSON) may consists of the following:
         - `scheme`: Allows vault owner to switch to a different scheme
         - `ownerAddress`: Transfers vault's ownership to a new address.
 
-1. `withdrawFromVault VAULT_ID`
+1. `withdrawfromvault VAULT_ID`
     - Withdraw collateral tokens from vault.
     - Vault collateralization ratio must not be less than `mincolratio` of vault's scheme.
+    - Also used to withdraw assets that are left in a vault due to higher auction yield. See [Collateral auction](#collateral-auction)
+
+1. `takeloan VAULT_ID DATA`
+    - `DATA` would spell out the tokens wanting to be taken out as loan.
+    - Vault collateralization ratio must not be less than `mincolratio` of vault's scheme.
+
+### Auction
+
+Requires no additional authentications.
+
+1. `listauctions`
+
+1. `bid AUCTION_ID TOTAL_PRICE`
+    - `TOTAL_PRICE` of token in auction will be locked up until the conclusion of the auction, or refunded when outbid.
