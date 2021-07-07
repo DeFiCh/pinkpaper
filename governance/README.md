@@ -2,28 +2,26 @@
 
 ## Governance summary
 
-Voting is carried out every 70,000 blocks, roughly once every month.
+Voting is carried out every 90,000 blocks, roughly once every calendar month.
 
 Types of governance:
 
 1. Community development fund request proposal
     - Requesting of community development fund.
     - Requires simple majority (> 50%) by non-neutral voting masternodes to pass.
-    - Fee: 10 DFI per proposal, of which half is burned.
-    - The other half of the fee is distributed equally among all voting masternodes to encourage voting.
+    - Fee: 10 DFI per proposal
 
 2. Block reward reallocation proposal
     - Note the miner's reward (PoS) are guaranteed and cannot be reallocated.
     - Requires super majority (> 66.67%) by non-neutral voting masternodes to pass.
-    - Fee: 500 DFI, of which half is burned.
-    - The other half of the fee is distributed equally among all voting masternodes to encourage voting.
+    - Fee: 500 DFI per proposal
 
 3. Vote of confidence
-    - General directional vote, not consensus enforcible.
+    - General directional vote, not consensus enforceable.
     - Requires super majority (> 66.67%) by non-neutral voting masternodes to pass.
-    - Fee: 50 DFI per proposal, of which half is burned
-    - The other half of the fee is distributed equally among all voting masternodes to encourage voting.
+    - Fee: 50 DFI per proposal
 
+All fees are trackably burned.
 
 ## Community fund request proposal (CFP)
 
@@ -37,9 +35,9 @@ The amount at `dZcHjYhKtEM88TtZLjp314H2xZjkztXtRc` will be moved to a community 
 
 This fund, will be similar to Incentive Funding and Anchor Reward, they have no private keys and are unrealized by default unless allocated.
 
-Voting is carried our every 70,000 blocks (at \~2335 blocks per day, that's roughly once every calendar month). This should be configurable as chainparams and requires a hardfork to update. The block where the vote is finalized is also known as "Voting Finalizing Block".
+Voting is carried our every 90,000 blocks (roughly once every calendar month). This should be configurable as chainparams and requires a hardfork to update. The block where the vote is finalized is also known as "Voting Finalizing Block".
 
-User is able to submit a fund request that is to be voted by masternodes. Each fund request costs non-refundable 10 DFI. The 10 DFI is not burned, but being added to the proposal for that will be paid out to all voting masternodes to encourage participation. Each fund request can be also specify `cycle`. Cycle is defaulted to `1` for one-off fund request, this also allows for periodic fund requests where a request is for a fixed amount to be paid out every cycle (every 70,000 blocks) for the specified cycles if the funding request remains APPROVED state.
+User is able to submit a fund request that is to be voted by masternodes. Each fund request costs non-refundable 10 DFI. The 10 DFI is not burned, but being added to the proposal for that will be paid out to all voting masternodes to encourage participation. Each fund request can be also specify `cycle`. Cycle is defaulted to `1` for one-off fund request, this also allows for periodic fund requests where a request is for a fixed amount to be paid out every cycle (every 90,000 blocks) for the specified cycles if the funding request remains APPROVED state.
 
 ### Data structure of a funding request
 
@@ -75,7 +73,7 @@ The absence of the state `APPROVED` is intended. An approved request will simply
 1. `creategovcfr '{DATA}'`
     - `DATA` is serialized JSON with the following:
         - `title`
-        - `finalizeAfter`: Defaulted to current block height + 70000/2
+        - `finalizeAfter`: Defaulted to current block height + 90000/2. All eligible proposals have to be submitted at least 90k blocks before the finalizing block and not more than 270k blocks before.
         - `cycles`: Defaulted to `1` if unspecified.
         - `amount`: in DFI.
         - `payoutAddress`: DFI address
@@ -110,11 +108,7 @@ At every vote finalizing block, a community fund proposal (CFP) is deemed to be 
 
 1. There are more YES votes than NO votes. Simple majority wins. NEUTRAL votes are not counted. If there are equal amount of YES and NO votes, the CFR is deemed to have failed and rejected.
 2. The voting masternodes eligibility must be `ENABLED` at the finalizing block and have mined at least 1 block.
-
-### Voting incentives
-
-One of the problems of governance is that masternodes are not directly incentivized to vote as they are rewarded with staking but usually not with voting. To encourage masternodes participation in governance voting, 50% of the fees are distributed to all voting masternodes for each DFIPs. All voting masternodes, be it `yes`, `no`, or `neutral` are all eligible to receive a share of the fee, distributed evenly.
-
+3. Quorum: All proposals require at least 1% of voting masternodes of all active masternodes that mined at least 1 block before the finalizing block.
 
 ## Other proposals
 
