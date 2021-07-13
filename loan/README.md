@@ -241,9 +241,10 @@ Requires no authorizations.
 
 Vault-related, but does not require owner's authentication.
 
-1. `createvault ownerAddress [SCHEME_ID]`
-    - Create a vault for ownerAddress.
-    - No ownerAddress authorization required so that it can be used for yet-to-be-revealed script hash address.
+1. `createvault [OWNER_ADDRESS] [SCHEME_ID]`
+    - Create a vault for `OWNER_ADDRESS`.
+    - No `OWNER_ADDRESS` authorization required so that it can be used for yet-to-be-revealed script hash address.
+    - If `OWNER_ADDRESS` is not specified in RPC, generates a new address from wallet before crafting the transaction.
 
 1. `deposittovault VAULT_ID`
     - Deposit accepted collateral tokens to vault.
