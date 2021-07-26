@@ -71,12 +71,10 @@ Vault owner can define which loan scheme to subscribe to during initial vault cr
 
 ### Interest rate
 
-Interest rate for loan is chargeable in two forms:
+Interest rate for loan consists of 2 parts:
 
-- DeFi fee, which is required and it must be in DFI
-- Operator fee, which can be in the form of any tokens
-
-During the initial introduction, Operator fee will not be supported yet, until Operator is in place.
+- Vault interest, based on loan scheme of individual vaults
+- Token interest, based on loan tokens, e.g. `TSLA` token might have its own interest that is chargeable only for `TSLA` token.
 
 [DeFi fees](../fees) are burned. Fees are typically collected in the form of the loan token repayment, and automatically swapped on DEX for DFI to be burned.
 
@@ -87,6 +85,14 @@ For example, if a loan of 100 `TSLA` is taken out and repaid back exactly 6 mont
 ### Vault
 
 User is able to freely open a vault and deposit tokens to a vault. Vault is transferable to other owners, including being controlled by multisig address.
+
+### Collateral DFI requirement
+
+Vault's collateral requires at least 50% of it to be DFI.
+
+When depositing non-DFI collateral to a vault, it needs to ensure that the resulting DFI proportion of for vault's collateral is at least 50% or more, or the deposit transaction should fail.
+
+This requirement is only checked upon deposited and does not play a role in liquidation. For instance, if at the time of posit, a vault's DFI collateral is 52%, but falls to 49% without any further deposit. This WILL NOT trigger liquidation as long as vault's minimum collateralization ratio condition is still met.
 
 ## Liquidation
 
@@ -212,14 +218,15 @@ Requires Operator authorization. Before Operator model is ready, it uses only 1 
     - `ACTIVATE_AFTER_BLOCK` _(optional)_: If set, this will only be activated after the set block. The purpose is to allow good operators to provide sufficient warning to their users should certain collateralization factors need to be updated.
     - This very same transaction type is also used for updating and removing of collateral token, by setting the factor to `0`.
 
-1. `setgentoken DATA`
-    - Creates or updates generator token – token generated from loan.
+1. `setloantoken DATA`
+    - Creates or updates loan token.
     - `DATA` (JSON)
         - `symbol`
         - `name`
-        - `priceId`: ID of to tie the generator token's price to.
+        - `priceId`: ID of to tie the loan token's price to.
         - `mintable` (bool): When this is `true`, vault owner can mint this token.
-    - This very same transaction type is also used for updating and removing of generator token, by setting the factor to `0`.
+        - `interestrate`: Annual rate, but chargeable per block (scaled to 30-sec block). e.g. 0.035 for 3.5% interest rate. Must be >= 0. Default: 0.
+    - To also implement `updateloantoken` and `listloantokens`.
 
 ### Public
 
@@ -246,9 +253,12 @@ Vault-related, but does not require owner's authentication.
     - No `OWNER_ADDRESS` authorization required so that it can be used for yet-to-be-revealed script hash address.
     - If `OWNER_ADDRESS` is not specified in RPC, generates a new address from wallet before crafting the transaction.
 
-1. `deposittovault VAULT_ID`
+1. `deposittovault VAULT_ID TOKEN_TO_DEPOSIT`
     - Deposit accepted collateral tokens to vault.
     - Does not require authentication, anyone can top up anyone's vault.
+    - `TOKEN_TO_DEPOSIT` should be in similar format as other tokens on DeFiChain, e.g. `23.42@USDC` and `0.42@DFI`.
+    - Also take note on the >= 50% DFI requirement, when depositing a non-DFI token, it should reject if the total value of the vault's collateral after the deposit brings DFI value to less than 50% of vault's collateral.
+    - This also means that the first deposit to a vault has to always be DFI.
 
 1. `loanpayback VAULT_ID`
     - Pay back of loan token.
