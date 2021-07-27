@@ -25,7 +25,7 @@ Collateralization ratio =
     (Total value of tokens minted + Total interest)
 ```
 
-For example, if a vault holds $200 worth of collateral asset, with $130 minted tokens and $10 of total interest accrued, the collateralization ratio is 200 / (90 + 10) = 2.
+For example, if a vault holds $200 worth of collateral asset, with $90 minted tokens and $10 of total interest accrued, the collateralization ratio is 200 / (90 + 10) = 2.
 
 This is not to be confused with _collateralization factor_.
 
