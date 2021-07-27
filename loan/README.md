@@ -266,6 +266,16 @@ Vault-related, but does not require owner's authentication.
     - Refunds additional loan token back to original caller, if 51.1 `TSLA` is owed and user pays 52 `TSLA`, 0.9 `TSLA` is returned as change to transaction originator (not vault owner).
     - Does not require authentication, anyone can payback anyone's loan.
 
+1. `getvault [VAULT_ID]`
+    - Returns the attributes of a vault.
+    - Includes especially the following:
+        - Owner address
+        - Loan scheme ID
+        - `isliquidated` (boolean) whether if a vault has been liquidated.
+
+1. `listvaults`
+    - Returns the list of attributes to all the created vaults.
+
 ### Vault owner
 
 Requires ownerAddress authentication, and vault MUST NOT be in liquidation state.
