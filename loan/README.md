@@ -232,14 +232,14 @@ Requires Operator authorization. Before Operator model is ready, it uses only 1 
 
 Requires no authorizations.
 
-1. `getloan [OPERATOR_ID]`
-    - Returns the attributes of loan offered by Operator.
+1. `getloaninfo`
+    - Returns the attributes of loans offered by Operator.
     - Includes especially the following:
-        - Collaterals, and collateral value
-        - Loan tokens, and loan value
-        - Collateralization ratio
-        - Loan scheme
-        - `inliquidation` (boolean) whether if a vault is under liquidation
+        - Collateral tokens: List of collateral tokens
+        - Loan tokens: List of loan tokens
+        - Loan schemes: List of loan schemes
+        - Collateral value (USD): Total collateral in vaults
+        - Loan value (USD): Total loan token in vaults
 
 1. `listloanschemes`
     - Returns the list of attributes to all the available loan schemes.
