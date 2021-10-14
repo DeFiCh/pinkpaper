@@ -259,7 +259,11 @@ Vault-related, but does not require owner's authentication.
     - Also take note on the >= 50% DFI requirement, when depositing a non-DFI token, it should reject if the total value of the vault's collateral after the deposit brings DFI value to less than 50% of vault's collateral.
     - This also means that the first deposit to a vault has to always be DFI.
 
-1. `loanpayback VAULT_ID`
+1. `loanpayback DATA`
+    - `DATA` (JSON)
+        - `VAULT_ID`: loan's vault ID.
+        - `ADDRESS`: Address containing repayment tokens.
+        - `AMOUNTS`: Amounts to pay back.
     - Pay back of loan token.
     - Only works when there are loan in the token.
     - Refunds additional loan token back to original caller, if 51.1 `TSLA` is owed and user pays 52 `TSLA`, 0.9 `TSLA` is returned as change to transaction originator (not vault owner).
