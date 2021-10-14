@@ -193,8 +193,8 @@ Requires Operator authorization. Before Operator model is ready, it uses only 1 
 
 1. `createloanscheme DATA`
     - `DATA` (JSON) can consist of the following:
-        - `mincolratio`: e.g. 1.75 for 175% minimum collateralization ratio. Cannot be less than 1.
-        - `interestrate`: Annual rate, but chargeable per block (scaled to 30-sec block). e.g. 0.035 for 3.5% interest rate. Must be >0.
+        - `mincolratio`: e.g. 175 for 175% minimum collateralization ratio. Cannot be less than 100.
+        - `interestrate`: Annual rate, but chargeable per block (scaled to 30-sec block). e.g. 3.5 for 3.5% interest rate. Must be > 0.
         - `id`: Non-colliding scheme ID that's unique within opspace, e.g. `MIN_175`
 
 1. `updateloanscheme SCHEME_ID DATA [ACTIVATE_AFTER_BLOCK]`
@@ -225,7 +225,7 @@ Requires Operator authorization. Before Operator model is ready, it uses only 1 
         - `name`
         - `priceId`: ID of to tie the loan token's price to.
         - `mintable` (bool): When this is `true`, vault owner can mint this token.
-        - `interestrate`: Annual rate, but chargeable per block (scaled to 30-sec block). e.g. 0.035 for 3.5% interest rate. Must be >= 0. Default: 0.
+        - `interestrate`: Annual rate, but chargeable per block (scaled to 30-sec block). e.g. 3.5 for 3.5% interest rate. Must be >= 0. Default: 0.
     - To also implement `updateloantoken` and `listloantokens`.
 
 ### Public
