@@ -212,20 +212,20 @@ Requires Operator authorization. Before Operator model is ready, it uses only 1 
 
 1. `setcollateraltoken DATA`
     - `DATA` (JSON)
-        - `TOKEN`: Token must not be the same decentralized token is issued by the same operator's loan program.
-        - `FACTOR`: A number between `0` to `1`, inclusive. `1` being 100% collateralization factor.
-        - `FIXED_INTERVAL_PRICE_ID`: Token/currency pair to track token price.
-        - `ACTIVATE_AFTER_BLOCK` _(optional)_: If set, this will only be activated after the set block. The purpose is to allow good operators to provide sufficient warning to their users should certain collateralization factors need to be updated.
+        - `token`: Token must not be the same decentralized token is issued by the same operator's loan program.
+        - `factor`: A number between `0` to `1`, inclusive. `1` being 100% collateralization factor.
+        - `fixedIntervalPriceId`: Token/currency pair to track token price.
+        - `activateAfterBlock` _(optional)_: If set, this will only be activated after the set block. The purpose is to allow good operators to provide sufficient warning to their users should certain collateralization factors need to be updated.
         - This very same transaction type is also used for updating and removing of collateral token, by setting the factor to `0`.
 
 1. `setloantoken DATA`
     - Creates or updates loan token.
     - `DATA` (JSON)
-        - `SYMBOL`Token's symbol (unique), not longer than 8
-        - `NAME` Token's name (optional), not longer than 128
-        - `FIXED_INTERVAL_PRICE_ID`: Token/currency pair to track token price.
-        - `MINTABLE` (bool): When this is `true`, vault owner can mint this token. (defaults to true)
-        - `INTEREST_RATE`: Annual rate, but chargeable per block (scaled to 30-sec block). e.g. 3.5 for 3.5% interest rate. Must be >= 0. Default: 0.
+        - `symbol`Token's symbol (unique), not longer than 8
+        - `name` Token's name (optional), not longer than 128
+        - `fixedIntervalPriceId`: Token/currency pair to track token price.
+        - `mintable` (bool): When this is `true`, vault owner can mint this token. (defaults to true)
+        - `interest`: Annual rate, but chargeable per block (scaled to 30-sec block). e.g. 3.5 for 3.5% interest rate. Must be >= 0. Default: 0.
     - To also implement `updateloantoken` and `listloantokens`.
 
 ### Public
@@ -261,9 +261,9 @@ Vault-related, but does not require owner's authentication.
 
 1. `loanpayback DATA`
     - `DATA` (JSON)
-        - `VAULT_ID`: loan's vault ID.
-        - `ADDRESS`: Address containing repayment tokens.
-        - `AMOUNTS`: Amounts to pay back.
+        - `vaultId`: loan's vault ID.
+        - `from`: Address containing repayment tokens.
+        - `amounts`: Amounts to pay back.
     - Pay back of loan token.
     - Only works when there are loan in the token.
     - Refunds additional loan token back to original caller, if 51.1 `TSLA` is owed and user pays 52 `TSLA`, 0.9 `TSLA` is returned as change to transaction originator (not vault owner).
@@ -288,13 +288,16 @@ Requires ownerAddress authentication, and vault MUST NOT be in liquidation state
         - `scheme`: Allows vault owner to switch to a different scheme
         - `ownerAddress`: Transfers vault's ownership to a new address.
 
-1. `withdrawfromvault VAULT_ID`
+1. `withdrawfromvault VAULT_ID TO_ADDRESS AMOUNT`
     - Withdraw collateral tokens from vault.
     - Vault collateralization ratio must not be less than `mincolratio` of vault's scheme.
     - Also used to withdraw assets that are left in a vault due to higher auction yield. See [Collateral auction](#collateral-auction)
 
-1. `takeloan VAULT_ID DATA`
-    - `DATA` would spell out the tokens wanting to be taken out as loan.
+1. `takeloan DATA`
+    - `DATA` (JSON)
+        - `vaultId`: ID of vault used for loan.
+        - `to`: Address to transfer tokens (optional).
+        - `amounts`: Amount in amount@token format.
     - Vault collateralization ratio must not be less than `mincolratio` of vault's scheme.
 
 ### Auction
