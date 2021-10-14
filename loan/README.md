@@ -210,21 +210,22 @@ Requires Operator authorization. Before Operator model is ready, it uses only 1 
 
 #### General
 
-1. `setcollateraltoken TOKEN FACTOR PRICE_FEED_ID [ACTIVATE_AFTER_BLOCK]`
-    - `TOKEN`: Token must not be the same decentralized token is issued by the same operator's loan program.
-    - `FACTOR`: A number between `0` to `1`, inclusive. `1` being 100% collateralization factor.
-    - `PRICE_FEED_ID`: Price feed from [oracle](../oracle) that is being used to price the token.
-    - `ACTIVATE_AFTER_BLOCK` _(optional)_: If set, this will only be activated after the set block. The purpose is to allow good operators to provide sufficient warning to their users should certain collateralization factors need to be updated.
-    - This very same transaction type is also used for updating and removing of collateral token, by setting the factor to `0`.
+1. `setcollateraltoken DATA`
+    - `DATA` (JSON)
+        - `TOKEN`: Token must not be the same decentralized token is issued by the same operator's loan program.
+        - `FACTOR`: A number between `0` to `1`, inclusive. `1` being 100% collateralization factor.
+        - `FIXED_INTERVAL_PRICE_ID`: Token/currency pair to track token price.
+        - `ACTIVATE_AFTER_BLOCK` _(optional)_: If set, this will only be activated after the set block. The purpose is to allow good operators to provide sufficient warning to their users should certain collateralization factors need to be updated.
+        - This very same transaction type is also used for updating and removing of collateral token, by setting the factor to `0`.
 
 1. `setloantoken DATA`
     - Creates or updates loan token.
     - `DATA` (JSON)
-        - `symbol`
-        - `name`
-        - `priceId`: ID of to tie the loan token's price to.
-        - `mintable` (bool): When this is `true`, vault owner can mint this token.
-        - `interestrate`: Annual rate, but chargeable per block (scaled to 30-sec block). e.g. 3.5 for 3.5% interest rate. Must be >= 0. Default: 0.
+        - `SYMBOL`Token's symbol (unique), not longer than 8
+        - `NAME` Token's name (optional), not longer than 128
+        - `FIXED_INTERVAL_PRICE_ID`: Token/currency pair to track token price.
+        - `MINTABLE` (bool): When this is `true`, vault owner can mint this token. (defaults to true)
+        - `INTEREST_RATE`: Annual rate, but chargeable per block (scaled to 30-sec block). e.g. 3.5 for 3.5% interest rate. Must be >= 0. Default: 0.
     - To also implement `updateloantoken` and `listloantokens`.
 
 ### Public
