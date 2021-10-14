@@ -120,9 +120,9 @@ The entirety of loan and collateral of a vault if put up for auction. As the fir
 
 #### Example
 
-A vault, that requires a minimum of 150% collateralization ratio contains $15,000 worth of collateral, which consists of $10,000 worth if BTC and $5,000 worth if DFI, and the total loan, inclusive of interest, is $11,000 worth.
+A vault, that requires a minimum of 150% collateralization ratio contains $15,000 worth of collateral, which consists of $10,000 worth of DFI and $5,000 worth of BTC, and the total loan, inclusive of interest, is $11,000 worth.
 
-- Collateral: $10,000 BTC + $5,000 DFI
+- Collateral: $10,000 DFI + $5,000 BTC
 - Loan: $10,000 `TSLA` + $1,000 interest (`TSLA`)
 
 Collateralization ratio = 15k / 11k = 136.36% less than the required 150%. Liquidation is triggered automatically by consensus. Auction will be initiated with the intention to liquidate $15k of collateral to recover $11k of loan.
@@ -136,8 +136,8 @@ Total collateral worth is $15k, it will thus be split into 2 batches, each not e
 
 Specifically the following:
 
-1. ($6,667 BTC and $3,333 DFI) for $7,700 `TSLA`
-1. ($3,333 BTC and $1,667 DFI) for $3,850 `TSLA`
+1. ($6,667 DFI and $3,333 BTC) for $7,700 `TSLA`
+1. ($3,333 DFI and $1,667 BTC) for $3,850 `TSLA`
 
 `TSLA` recovered at the conclusion of the auction will be paid back to the vault. Once all loan is repaid, vault will exit liquidation state, allowing its owner to continue to use it. It will, however, not terminate all opened auctions. Opened auctions see through to their conclusion.
 
@@ -146,7 +146,7 @@ Specifically the following:
 
 Collateral auction will run for 720 blocks (approximately 6 hours) with the starting price based on liquidation vault's ratio.
 
-Using the same illustration, Auction 1: ($6,667 BTC and $3,333 DFI) for $7,700 `TSLA`
+Using the same illustration, Auction 1: ($6,667 DFI and $3,333 BTC) for $7,700 `TSLA`
 
 Anyone can participate in the auction, including the vault owner by bidding for the entirety of the auction with higher amount. To prevent unnecessary auction sniping at closing blocks, each higher bid, except the first one, has to be at least 1% higher than previous bid.
 
