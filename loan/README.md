@@ -306,5 +306,10 @@ Requires no additional authentications.
 
 1. `listauctions`
 
-1. `bid AUCTION_ID TOTAL_PRICE`
+1. `auctionbid VAULT_ID INDEX FROM AMOUNT`
+    - `VAULT_ID`: Vault id.
+    - `INDEX`: Auction index.
+    - `FROM`: Address to get tokens.
+    - `AMOUNT`: Amount of amount@symbol format.
+
     - `TOTAL_PRICE` of token in auction will be locked up until the conclusion of the auction, or refunded when outbid.
