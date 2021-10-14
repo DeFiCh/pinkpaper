@@ -204,7 +204,6 @@ Requires Operator authorization. Before Operator model is ready, it uses only 1 
 1. `destroyloanscheme SCHEME_ID [ACTIVATE_AFTER_BLOCK]`
     - Destroy a loan scheme.
     - `ACTIVATE_AFTER_BLOCK` _(optional)_: If set, this will only be activated after the set block. The purpose is to allow good operators to provide sufficient warning.
-    - Any loans under the scheme will be moved to default loan scheme after destruction.
 
 1. `setdefaultloanscheme SCHEME_ID`
     - Designate a default loan scheme from the available loan schemes.
