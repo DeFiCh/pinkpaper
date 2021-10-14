@@ -197,7 +197,7 @@ Requires Operator authorization. Before Operator model is ready, it uses only 1 
         - `interestrate`: Annual rate, but chargeable per block (scaled to 30-sec block). e.g. 3.5 for 3.5% interest rate. Must be > 0.
         - `id`: Non-colliding scheme ID that's unique within opspace, e.g. `MIN_175`
 
-1. `updateloanscheme SCHEME_ID DATA [ACTIVATE_AFTER_BLOCK]`
+1. `updateloanscheme MIN_COL_RATIO INTEREST_RATE SCHEME_ID [ACTIVATE_AFTER_BLOCK]`
     - Update loan scheme details.
     - `ACTIVATE_AFTER_BLOCK` _(optional)_: If set, this will only be activated after the set block. The purpose is to allow good operators to provide sufficient warning.
 
