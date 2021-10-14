@@ -251,6 +251,9 @@ Vault-related, but does not require owner's authentication.
 1. `createvault [OWNER_ADDRESS] [SCHEME_ID]`
     - Create a vault for `OWNER_ADDRESS`.
     - No `OWNER_ADDRESS` authorization required so that it can be used for yet-to-be-revealed script hash address.
+    - 2 DFIs needed for createvault.
+    - 1 DFI burned, and 1 added to collateral.
+    - The last 1 added to collateral will be reclaimed  on closevault.
 
 1. `deposittovault VAULT_ID TOKEN_TO_DEPOSIT`
     - Deposit accepted collateral tokens to vault.
