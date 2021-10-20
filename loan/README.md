@@ -120,7 +120,7 @@ The entirety of loan and collateral of a vault if put up for auction. As the fir
 
 #### Example
 
-A vault, that requires a minimum of 150% collateralization ratio contains $15,000 worth of collateral, which consists of $10,000 worth if BTC and $5,000 worth if DFI, and the total loan, inclusive of interest, is $11,000 worth.
+A vault, that requires a minimum of 150% collateralization ratio contains $15,000 worth of collateral, which consists of $10,000 worth of BTC and $5,000 worth of DFI, and the total loan, inclusive of interest, is $11,000 worth.
 
 - Collateral: $10,000 BTC + $5,000 DFI
 - Loan: $10,000 `TSLA` + $1,000 interest (`TSLA`)
