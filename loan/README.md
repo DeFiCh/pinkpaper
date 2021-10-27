@@ -120,9 +120,9 @@ The entirety of loan and collateral of a vault if put up for auction. As the fir
 
 #### Example
 
-A vault, that requires a minimum of 150% collateralization ratio contains $15,000 worth of collateral, which consists of $10,000 worth of BTC and $5,000 worth of DFI, and the total loan, inclusive of interest, is $11,000 worth.
+A vault, that requires a minimum of 150% collateralization ratio contains $15,000 worth of collateral, which consists of $10,000 worth of DFI and $5,000 worth of BTC, and the total loan, inclusive of interest, is $11,000 worth.
 
-- Collateral: $10,000 BTC + $5,000 DFI
+- Collateral: $10,000 DFI + $5,000 BTC
 - Loan: $10,000 `TSLA` + $1,000 interest (`TSLA`)
 
 Collateralization ratio = 15k / 11k = 136.36% less than the required 150%. Liquidation is triggered automatically by consensus. Auction will be initiated with the intention to liquidate $15k of collateral to recover $11k of loan.
@@ -136,8 +136,8 @@ Total collateral worth is $15k, it will thus be split into 2 batches, each not e
 
 Specifically the following:
 
-1. ($6,667 BTC and $3,333 DFI) for $7,700 `TSLA`
-1. ($3,333 BTC and $1,667 DFI) for $3,850 `TSLA`
+1. ($6,667 DFI and $3,333 BTC) for $7,700 `TSLA`
+1. ($3,333 DFI and $1,667 BTC) for $3,850 `TSLA`
 
 `TSLA` recovered at the conclusion of the auction will be paid back to the vault. Once all loan is repaid, vault will exit liquidation state, allowing its owner to continue to use it. It will, however, not terminate all opened auctions. Opened auctions see through to their conclusion.
 
@@ -146,7 +146,7 @@ Specifically the following:
 
 Collateral auction will run for 720 blocks (approximately 6 hours) with the starting price based on liquidation vault's ratio.
 
-Using the same illustration, Auction 1: ($6,667 BTC and $3,333 DFI) for $7,700 `TSLA`
+Using the same illustration, Auction 1: ($6,667 DFI and $3,333 BTC) for $7,700 `TSLA`
 
 Anyone can participate in the auction, including the vault owner by bidding for the entirety of the auction with higher amount. To prevent unnecessary auction sniping at closing blocks, each higher bid, except the first one, has to be at least 1% higher than previous bid.
 
@@ -193,11 +193,11 @@ Requires Operator authorization. Before Operator model is ready, it uses only 1 
 
 1. `createloanscheme DATA`
     - `DATA` (JSON) can consist of the following:
-        - `mincolratio`: e.g. 1.75 for 175% minimum collateralization ratio. Cannot be less than 1.
-        - `interestrate`: Annual rate, but chargeable per block (scaled to 30-sec block). e.g. 0.035 for 3.5% interest rate. Must be >0.
+        - `mincolratio`: e.g. 175 for 175% minimum collateralization ratio. Cannot be less than 100.
+        - `interestrate`: Annual rate, but chargeable per block (scaled to 30-sec block). e.g. 3.5 for 3.5% interest rate. Must be > 0.
         - `id`: Non-colliding scheme ID that's unique within opspace, e.g. `MIN_175`
 
-1. `updateloanscheme SCHEME_ID DATA [ACTIVATE_AFTER_BLOCK]`
+1. `updateloanscheme MIN_COL_RATIO INTEREST_RATE SCHEME_ID [ACTIVATE_AFTER_BLOCK]`
     - Update loan scheme details.
     - `ACTIVATE_AFTER_BLOCK` _(optional)_: If set, this will only be activated after the set block. The purpose is to allow good operators to provide sufficient warning.
 
@@ -211,21 +211,22 @@ Requires Operator authorization. Before Operator model is ready, it uses only 1 
 
 #### General
 
-1. `setcollateraltoken TOKEN FACTOR PRICE_FEED_ID [ACTIVATE_AFTER_BLOCK]`
-    - `TOKEN`: Token must not be the same decentralized token is issued by the same operator's loan program.
-    - `FACTOR`: A number between `0` to `1`, inclusive. `1` being 100% collateralization factor.
-    - `PRICE_FEED_ID`: Price feed from [oracle](../oracle) that is being used to price the token.
-    - `ACTIVATE_AFTER_BLOCK` _(optional)_: If set, this will only be activated after the set block. The purpose is to allow good operators to provide sufficient warning to their users should certain collateralization factors need to be updated.
-    - This very same transaction type is also used for updating and removing of collateral token, by setting the factor to `0`.
+1. `setcollateraltoken DATA`
+    - `DATA` (JSON)
+        - `token`: Token must not be the same decentralized token is issued by the same operator's loan program.
+        - `factor`: A number between `0` to `1`, inclusive. `1` being 100% collateralization factor.
+        - `fixedIntervalPriceId`: Token/currency pair to track token price.
+        - `activateAfterBlock` _(optional)_: If set, this will only be activated after the set block. The purpose is to allow good operators to provide sufficient warning to their users should certain collateralization factors need to be updated.
+        - This very same transaction type is also used for updating and removing of collateral token, by setting the factor to `0`.
 
 1. `setloantoken DATA`
     - Creates or updates loan token.
     - `DATA` (JSON)
-        - `symbol`
-        - `name`
-        - `priceId`: ID of to tie the loan token's price to.
-        - `mintable` (bool): When this is `true`, vault owner can mint this token.
-        - `interestrate`: Annual rate, but chargeable per block (scaled to 30-sec block). e.g. 0.035 for 3.5% interest rate. Must be >= 0. Default: 0.
+        - `symbol`Token's symbol (unique), not longer than 8
+        - `name` Token's name (optional), not longer than 128
+        - `fixedIntervalPriceId`: Token/currency pair to track token price.
+        - `mintable` (bool): When this is `true`, vault owner can mint this token. (defaults to true)
+        - `interest`: Annual rate, but chargeable per block (scaled to 30-sec block). e.g. 3.5 for 3.5% interest rate. Must be >= 0. Default: 0.
     - To also implement `updateloantoken` and `listloantokens`.
 
 ### Public
@@ -251,7 +252,9 @@ Vault-related, but does not require owner's authentication.
 1. `createvault [OWNER_ADDRESS] [SCHEME_ID]`
     - Create a vault for `OWNER_ADDRESS`.
     - No `OWNER_ADDRESS` authorization required so that it can be used for yet-to-be-revealed script hash address.
-    - If `OWNER_ADDRESS` is not specified in RPC, generates a new address from wallet before crafting the transaction.
+    - 2 DFIs needed for createvault.
+    - 1 DFI burned, and 1 added to collateral.
+    - The last 1 added to collateral will be reclaimed  on closevault.
 
 1. `deposittovault VAULT_ID TOKEN_TO_DEPOSIT`
     - Deposit accepted collateral tokens to vault.
@@ -260,7 +263,11 @@ Vault-related, but does not require owner's authentication.
     - Also take note on the >= 50% DFI requirement, when depositing a non-DFI token, it should reject if the total value of the vault's collateral after the deposit brings DFI value to less than 50% of vault's collateral.
     - This also means that the first deposit to a vault has to always be DFI.
 
-1. `loanpayback VAULT_ID`
+1. `loanpayback DATA`
+    - `DATA` (JSON)
+        - `vaultId`: loan's vault ID.
+        - `from`: Address containing repayment tokens.
+        - `amounts`: Amounts to pay back.
     - Pay back of loan token.
     - Only works when there are loan in the token.
     - Refunds additional loan token back to original caller, if 51.1 `TSLA` is owed and user pays 52 `TSLA`, 0.9 `TSLA` is returned as change to transaction originator (not vault owner).
@@ -285,13 +292,16 @@ Requires ownerAddress authentication, and vault MUST NOT be in liquidation state
         - `scheme`: Allows vault owner to switch to a different scheme
         - `ownerAddress`: Transfers vault's ownership to a new address.
 
-1. `withdrawfromvault VAULT_ID`
+1. `withdrawfromvault VAULT_ID TO_ADDRESS AMOUNT`
     - Withdraw collateral tokens from vault.
     - Vault collateralization ratio must not be less than `mincolratio` of vault's scheme.
     - Also used to withdraw assets that are left in a vault due to higher auction yield. See [Collateral auction](#collateral-auction)
 
-1. `takeloan VAULT_ID DATA`
-    - `DATA` would spell out the tokens wanting to be taken out as loan.
+1. `takeloan DATA`
+    - `DATA` (JSON)
+        - `vaultId`: ID of vault used for loan.
+        - `to`: Address to transfer tokens (optional).
+        - `amounts`: Amount in amount@token format.
     - Vault collateralization ratio must not be less than `mincolratio` of vault's scheme.
 
 ### Auction
@@ -300,5 +310,10 @@ Requires no additional authentications.
 
 1. `listauctions`
 
-1. `bid AUCTION_ID TOTAL_PRICE`
+1. `auctionbid VAULT_ID INDEX FROM AMOUNT`
+    - `VAULT_ID`: Vault id.
+    - `INDEX`: Auction index.
+    - `FROM`: Address to get tokens.
+    - `AMOUNT`: Amount of amount@symbol format.
+
     - `TOTAL_PRICE` of token in auction will be locked up until the conclusion of the auction, or refunded when outbid.
