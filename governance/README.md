@@ -2,7 +2,7 @@
 
 ## Governance summary
 
-Voting is carried out every 100,000 blocks, roughly once every calendar month.
+Voting is carried out every 130,000 blocks, roughly once every calendar month.
 
 Types of governance:
 
