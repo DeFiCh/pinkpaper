@@ -1,4 +1,4 @@
-# Interchain Excahnge
+# Interchain Exchange
 
 ## Goals
 
