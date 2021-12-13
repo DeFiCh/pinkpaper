@@ -94,6 +94,13 @@ When depositing non-DFI collateral to a vault, it needs to ensure that the resul
 
 This requirement is only checked upon deposited and does not play a role in liquidation. For instance, if at the time of posit, a vault's DFI collateral is 52%, but falls to 49% without any further deposit. This WILL NOT trigger liquidation as long as vault's minimum collateralization ratio condition is still met.
 
+### States
+
+- "active" : Vault is above its collateralization ratio and both collaterals and loans price feeds are valid.
+- "frozen" : Any of collateral or loan price feed is invalid. No action can be undertaken while vault is frozen.
+- "inLiquidation" : Vault is under liquidation and has undergoing auctions.
+- "mayLiquidate" : Vault will liquidate at the next price update.
+
 ## Liquidation
 
 Liquidation occurs when the collateralization ratio of a vault falls below its minimum. Liquidation is crucial in ensuring that all loan tokens are sufficiently over-collateralized to support its price.
@@ -263,13 +270,13 @@ Vault-related, but does not require owner's authentication.
     - Also take note on the >= 50% DFI requirement, when depositing a non-DFI token, it should reject if the total value of the vault's collateral after the deposit brings DFI value to less than 50% of vault's collateral.
     - This also means that the first deposit to a vault has to always be DFI.
 
-1. `loanpayback DATA`
+1. `paybackloan DATA`
     - `DATA` (JSON)
         - `vaultId`: loan's vault ID.
         - `from`: Address containing repayment tokens.
-        - `amounts`: Amounts to pay back.
+        - `amounts`: Amounts to pay back in amount@token format.
     - Pay back of loan token.
-    - Only works when there are loan in the token.
+    - Only works when there are loans in the vault.
     - Refunds additional loan token back to original caller, if 51.1 `TSLA` is owed and user pays 52 `TSLA`, 0.9 `TSLA` is returned as change to transaction originator (not vault owner).
     - Does not require authentication, anyone can payback anyone's loan.
 
@@ -278,7 +285,7 @@ Vault-related, but does not require owner's authentication.
     - Includes especially the following:
         - Owner address
         - Loan scheme ID
-        - `isliquidated` (boolean) whether if a vault has been liquidated.
+        - `state` Can be one of `active`, `frozen`, `inLiquidation` and `mayLiquidate`. See [state](https://github.com/DeFiCh/pinkpaper/tree/main/loan#state)
 
 1. `listvaults`
     - Returns the list of attributes to all the created vaults.
