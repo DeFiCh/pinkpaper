@@ -160,4 +160,4 @@ Dave
 
 _TODO: Cleanup this document to be coherent_
 
-The above document has parts overriden by the [fees document](fees.md).
+The above document has parts overridden by the [fees document](fees.md).

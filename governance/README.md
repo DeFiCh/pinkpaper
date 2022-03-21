@@ -44,8 +44,8 @@ User is able to submit a fund request that is to be voted by masternodes. Each f
 #### User submitted data
 1. Title (required, this may also be implemented as hash of title to conserve on-chain storage)
 1. Payout address (required) this can be different from requester's address
-1. Finalize after block (optional, default=curr block + (blocks per cycle / 2))
-    - Max valid value would be curr block + 3 * blocks per cycle. No minimum.
+1. Finalize after block (optional, default=current block + (blocks per cycle / 2))
+    - Max valid value would be current block + 3 * blocks per cycle. No minimum.
     - The rationale for this value is to allow sufficient time for requests to be discussed and voted on, esp. when it is submitted closer to the end of current voting cycle.
 1. Amount per period (in DFI)
 1. Period requested (required, integer, default=1)
