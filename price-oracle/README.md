@@ -8,7 +8,7 @@ To provide a fully robust trustless oracle service requires components such as r
 
 ## Mechanics
 
-While truthfullness of the data cannot be assertained on the blockchain alone, the goals of the design should focus on building a _robust_ oracle system that should continue to function fine with a few minotirty oracle outages.
+While truthfulness of the data cannot be ascertained on the blockchain alone, the goals of the design should focus on building a _robust_ oracle system that should continue to function correctly with a few minor oracle outages.
 
 ### Price feeds
 

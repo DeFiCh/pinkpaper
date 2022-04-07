@@ -41,7 +41,7 @@ DeFiChain will support 2 types of futures:
   - TBD: Either automated, operator-run, or community-run with incentives.
 
 
-### Enahncements
+### Enhancements
 
 1. Future can further be enhanced to allow leverage. DeFiChain will start with no leverage (1x) and will introduce leverage once the mechanisms are stable.
 
